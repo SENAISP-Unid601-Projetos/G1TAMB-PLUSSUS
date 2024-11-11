@@ -1,0 +1,22 @@
+{
+  "name": "sus",
+  "version": "1.0.0",
+  "description": "Site do SUS",
+  "main": "app.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "saúde"
+  ],
+  "author": "Otavio, Felipe, Isabelle, Boiago, Mariane, Antonio, Samantha, Gabriel",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0",
+    "path": "^0.12.7",
+    "pg": "^8.13.0"
+  }
+}

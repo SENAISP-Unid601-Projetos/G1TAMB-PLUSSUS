@@ -1,0 +1,32 @@
+name: aplicativomobile
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.3.4 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_svg: ^2.0.10+1
+  font_awesome_flutter: ^10.0.0
+  intl: ^0.18.0
+  carousel_slider: ^4.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/thumbnail_logo.png
+    - assets/carousel-1.jpg
+    - assets/carousel-2.jpg
+    - assets/carousel-3.jpg
+    - assets/Hospital.jpg
+    - assets/header-page.jpg
+
+ 
