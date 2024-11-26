@@ -164,6 +164,7 @@
     align-items: center;
     justify-content: center;
     text-shadow: 0 0 30px rgba(0, 0, 0, .1);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .header-carousel .owl-nav {
@@ -254,11 +255,12 @@
 /*** Service ***/
 .service-item {
     transition: .5s;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .service-item:hover {
     margin-top: -10px;
-    box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .08);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .service-item .btn {
@@ -547,6 +549,7 @@
     position: relative;
     background-color: #13570e;
     color: #fff;
+    justify-content: space-between;
   }
   
   .title {
@@ -1781,8 +1784,8 @@ form {
 }
 
 label {
-    margin-bottom: 5px;
-    color: #555;
+  height: 50px;
+  color: #555;
 }
 
 input[type="text"],
@@ -1815,6 +1818,12 @@ textarea {
 
 .bntMed:hover {
     background-color: #819b7f;
+}
+
+.textoficha{
+  margin-top: 10px;
+  width: 340px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 
@@ -1871,4 +1880,35 @@ textarea {
 
 .emvolta{
   background-color: #13570eab
+}
+
+.Fcha{
+  height: 45px;
+    width: 340px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    margin-top: 10px;
+}
+
+.botaoatualizar{
+  background-color: #13570e;
+  width: 130px;
+  height: 70px;
+}
+
+input:focus,
+input:active{
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+button:focus,
+button:active{
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+select:focus,
+select:active{
+  outline: none !important;
+  box-shadow: none !important;
 }

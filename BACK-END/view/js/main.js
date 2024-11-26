@@ -180,17 +180,6 @@ function validarHorario(horario) {
     }
 }
 
-// function validarCrm(crm) {
-//     crm = crm.trim();
-//     const regexCRM = /^[0-9]{4,6}[A-Z]{2}$/i;
-
-//     if (!regexCRM.test(crm)) {
-//         return false;
-//     }
-//     return true;
-// }
-
-
 //Fetch com GET
 async function loginPaciente(strCpf) {
     const dados = {
@@ -213,6 +202,34 @@ async function loginPaciente(strCpf) {
             return erro;
         })
     return resposta;
+}
+
+async function listaPacientes(){
+    const resposta = await fetch(`/lista_pacientes`)  
+        .then((resposta) => {
+            return resposta.json();
+        })
+        .then((dados) => {
+                return dados;
+        })
+        .catch((erro) => {
+            return erro;
+        })
+        return resposta;
+}
+
+async function listaMedicos2(){
+    const resposta = await fetch(`/lista_medicos`)  
+        .then((resposta) => {
+            return resposta.json();
+        })
+        .then((dados) => {
+                return dados;
+        })
+        .catch((erro) => {
+            return erro;
+        })
+        return resposta;
 }
 
 
@@ -276,6 +293,90 @@ async function listaConsultasMed(strCrm) {
     return resposta;
 }
 
+async function listaConsultasPaciente(strCpf) {
+    const resposta = await fetch(`/lista_consultas_paciente?cpf=${strCpf}`)  
+        .then((resposta) => {
+            return resposta.json();
+        })
+        .then((dados) => {
+            return dados;
+        })
+        .catch((erro) => {
+            return erro;
+        })
+    return resposta;
+}
+
+async function removerConsulta(strId) {
+    const dados = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            id_consulta: `${strId}`,
+        })
+    }
+    const resposta = await fetch("/remove_consultas", dados)
+        .then((resposta) => {
+            return resposta.json();
+        })
+        .then((dados) => {
+            return dados;
+        })
+        .catch((erro) => {
+            return erro;
+        })
+    return resposta;
+}
+
+async function removerPaciente(strCpf) {
+    const dados = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            cpf: `${strCpf}`,
+        })
+    }
+    const resposta = await fetch("/remove_paciente", dados)
+        .then((resposta) => {
+            return resposta.json();
+        })
+        .then((dados) => {
+            alert(JSON.stringify(dados));
+            return dados;
+        })
+        .catch((erro) => {
+            return erro;
+        })
+    return resposta;
+}
+
+async function removerMedico(strCrm) {
+    const dados = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            crm: `${strCrm}`,
+        })
+    }
+    const resposta = await fetch("/remove_medico", dados)
+        .then((resposta) => {
+            return resposta.json();
+        })
+        .then((dados) => {
+            return dados;
+        })
+        .catch((erro) => {
+            return erro;
+        })
+    return resposta;
+}
+
 async function listaMedicamentos2(nome, dosagem) {
     console.log(nome+dosagem);
     const resposta = await fetch(`/lista_medicamentos2?nome=${nome}&dosagem=${dosagem}`, {
@@ -314,13 +415,17 @@ function cadastrarPaciente(Cpf, Nome, Email, Cart, Tel, Senha) {
         })
     }
     fetch("/cadastra_paciente", dados)
-        .then((resposta) => {
-            return resposta.json();
-        })
-        .then((dados) => {
-            console.log(dados);
+    .then(async (resposta) => {
+        if (resposta.status >= 400) {
+            throw await resposta.json();
+        }
+        return resposta.json();
+    })
+        .then(() => {
+            open("/loginpaciente", "_self");
         })
         .catch((erro) => {
+            mensagem2.textContent = erro.mensagem;
             console.error(erro);
         })
 }
@@ -342,13 +447,17 @@ function cadastrarMedico(Crm, Cpf, Nome, Email, Tel, Senha, Especialidade) {
         })
     }
     fetch("/cadastra_medico", dados)
-        .then((resposta) => {
-            return resposta.json();
-        })
-        .then((dados) => {
-            console.log(dados);
-        })
-        .catch((erro) => {
+    .then(async (resposta) => {
+        if (resposta.status >= 400) {
+            throw await resposta.json();
+        }
+        return resposta.json();
+    })
+    .then(() => {
+            open("/loginMed", "_self");
+    })
+    .catch((erro) => {
+            mensagem7.textContent = erro.mensagem;
             console.error(erro);
         })
 }
@@ -443,7 +552,7 @@ function listaMedicos() {
             }
             else {
                 for (let i = 0; i < dados.length; i++) {
-                    opcao = new Option(`${dados[i].nome} - ${dados[i].especialidade}`, `${dados[i].crm}`)
+                    opcao = new Option(`${dados[i].nome_medico} - ${dados[i].especialidade_medico}`, `${dados[i].crm_medico}`)
                     campoMedico.appendChild(opcao);
                 }
             }
@@ -498,10 +607,11 @@ function listaHorarios(medico, data) {
                     }
                 }
             }
-            else {
+            else{
                 for (let i = 0; i < dados.length; i++) {
                     for (let j = 0; j < hrs.length; j++) {
-                        if (dados[i].horario != hrs[j] && hrs[j] >= currentTime) {
+                        if ((hrs[j] >= currentTime || data > currentDate) && dados[i].horario != hrs[j]) {
+                        //if ((dados[i].horario != hrs[j] && hrs[j] >= currentTime) || (data > currentDate && dados[i].horario != hrs[j])) {
                             opcao = new Option(`${hrs[j]}`, `${hrs[j]}`)
                             campoHorarios.appendChild(opcao);
                         }
@@ -520,7 +630,6 @@ async function listaConsultas() {
             return resposta.json();
         })
         .then((dados) => {
-            console.log(dados);
             return dados
         })
         .catch((erro) => {
@@ -552,6 +661,9 @@ function direcionaHome() {
     }
     else if (localStorage.getItem("dadosMedico") != null) {
         open("/logadoMed", "_self");
+    }
+    else{
+        open("/","_self")
     }
 }
 
@@ -610,7 +722,6 @@ async function preencheFicha(cpf) {
                 return resposta.json();
             })
             .then((dados) => {
-    
                 return dados
             })
             .catch((erro) => {
@@ -619,16 +730,86 @@ async function preencheFicha(cpf) {
         return resposta;
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
-    let consultas;
+async function enviaEmailSenha() {
+    const campoEmail = document.querySelector("#email_recuperacao");
+    const email = campoEmail.value;
 
+    if (email != "") {
+        const dados = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(
+                {
+                    email: email
+                }
+            )
+        }
+    
+        await fetch("/resetSenha", dados)
+        .then( (resp) => {
+            return resp.json();
+        })
+        .then( (dados) => {
+            console.log(dados);
+            alert("Solicitação feita com sucesso!\nSe seu email estiver cadastrado no PlusSUS, você receberá um email para recuperar sua senha!");
+            open("/", "_self");
+        })
+        .catch( (erro) => {
+            console.log(erro);
+            alert("Email de Recuperação não pôde ser enviado!");
+        })
+    }
+    else {
+        alert("Favor preencher o campo de email!");
+    }
+}
+
+async function atualizaSenha() {
+    const campoSenha = document.querySelector("#novaSenha");
+    const campoConfirmaSenha = document.querySelector("#confirmaSenha");
+
+    if (campoSenha.value == "" || campoConfirmaSenha.value == "") {
+        alert("Favor preencher todos os campos!");
+    }
+    else if (campoSenha.value != campoConfirmaSenha.value) {
+        alert("As senhas inseridas não coincidem!");
+    }
+    else {
+        const dados = JSON.parse(atob(window.location.href.split("?id=")[1]));
+        dados.novaSenha = campoSenha.value;
+        const dadosRequisicao = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dados)
+        }
+        
+        await fetch("/atualizaSenha", dadosRequisicao)
+        .then( (resp) => {
+            return resp.json();
+        })
+        .then( (dados) => {
+            console.log(dados);
+            alert("Senha atualizada com sucesso!");
+            open("login.html", "_self");
+        })
+        .catch( (erro) => {
+            alert("Não foi possível atualizar a senha! Contate o administrador para mais detalhes!\nMotivo: " + erro);
+        })
+    }
+}
+
+window.addEventListener("DOMContentLoaded", async () => {
     try {
         const campoMedico = document.getElementById("especialidade")
         campoMedico.addEventListener("click", async () => {
             await listaMedicos();
         })
 
-        consultas = await listaConsultas();
+        //consultas = await listaConsultas();
     }
     catch (erro) {
         console.log(erro)
@@ -708,7 +889,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         botaoRegistroPaciente.addEventListener("click", async () => {
             if (validarCPF(cadastroCpf.value) && validarTelefone(cadastroTel.value) && validarEmail(cadastroEmail.value)) {
                 await cadastrarPaciente(cadastroCpf.value, cadastroNome.value, cadastroEmail.value, cadastroCart.value, cadastroTel.value, cadastroSenha.value)
-                open("/loginpaciente", "_self")
             } else {
                 mensagem2.textContent = "Cpf, telefone ou email inválido"
             }
@@ -724,7 +904,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         botaoRegistroMedico.addEventListener("click", async () => {
             if (validarCPF(cadastroCpfM.value) && validarTelefone(cadastroTelM.value) && validarEmail(cadastroEmailM.value)) {
                 await cadastrarMedico(cadastroCrm.value, cadastroCpfM.value, cadastroNomeM.value, cadastroEmailM.value, cadastroTelM.value, cadastroSenhaM.value, selectEspecialidade.value)
-                open("/loginMed", "_self")
+                
             } else {
                 mensagem7.textContent = "Dados inválido(s)";
             }
@@ -761,7 +941,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-        var tbody = document.querySelector("tbody:not(#tbodyMed)")
+        let consultas = await listaConsultas();
+        var tbodyFila = document.getElementById("tbodyFila");
 
         for (var i = 0; i < consultas.length; i++) {
             tr = document.createElement("tr");
@@ -781,7 +962,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             tr.appendChild(tdHorario);
             tr.appendChild(tdData);
             tr.appendChild(tdMedico);
-            tbody.appendChild(tr);
+            tbodyFila.appendChild(tr);
         }
     }
     catch (erro) {
@@ -893,166 +1074,397 @@ window.addEventListener("DOMContentLoaded", async () => {
     catch(erro) {
         console.log(erro);
     }
-})
+    try{
+        dadosUsuario = JSON.parse(localStorage.getItem("dadosUsuario"));
+        var nomePerfilPaciente = document.getElementById("nomePerfilPaciente");
+        var cpfPerfilPaciente = document.getElementById("cpfPerfilPaciente");
+        var emailPerfilPaciente = document.getElementById("emailPerfilPaciente");
+        var telPerfilPaciente = document.getElementById("telPerfilPaciente");
+        var cartPerfilPaciente = document.getElementById("cartPerfilPaciente");
+        nomePerfilPaciente.textContent = dadosUsuario[0].nome;
+        cpfPerfilPaciente.textContent = dadosUsuario[0].cpf;
+        emailPerfilPaciente.textContent = dadosUsuario[0].email;
+        telPerfilPaciente.textContent = dadosUsuario[0].telefone;
+        cartPerfilPaciente.textContent = dadosUsuario[0].carteirinha_sus;
 
-try {
-    const botaoCadastraMed = document.getElementById("botaoCadastraMed")
-    
-    botaoCadastraMed.addEventListener("click", async () => {
-        var dadosAdm = localStorage.getItem("dadosAdm")
-        var nomeMed = document.getElementById("nomeMed")
-        var doseMed = document.getElementById("doseMed")
-        var marcaMed = document.getElementById("marcaMed")
-        var qntMed = document.getElementById("qntMed")
-        var div = document.getElementById("divBotoesMed")
-        var lista = await listaMedicamentos2(nomeMed.value, doseMed.value)
-        
-        if(lista.length == 0){
-            await cadastrarMedicamento(nomeMed.value, marcaMed.value, qntMed.value, dadosAdm, doseMed.value)
-            mensagem8.textContent = "Medicamento adicionado"
+        var consultaFicha = await preencheFicha(dadosUsuario[0].cpf);
+
+        var campoFichaCirurgia = document.getElementById("campoFichaCirurgia");
+        var campoFichaCirurgia2 = document.getElementById("campoFichaCirurgia2");
+        var campoFichaInternacao = document.getElementById("campoFichaInternacao");
+        var campoFichaInternacao2 = document.getElementById("campoFichaInternacao2");
+        var campoFichaRemedio = document.getElementById("campoFichaRemedio");
+        var campoFichaRemedio2 = document.getElementById("campoFichaRemedio2");
+        var campoFichaAlergia = document.getElementById("campoFichaAlergia");
+        var campoFichaAlergia2 = document.getElementById("campoFichaAlergia2");
+        var campoFichaTratamento = document.getElementById("campoFichaTratamento");
+        var campoFichaTratamento2 = document.getElementById("campoFichaTratamento2");
+        var campoFichaProblemaRespiratorio = document.getElementById("campoFichaProblemaRespiratorio");
+        var campoFichaProblemaRespiratorio2 = document.getElementById("campoFichaProblemaRespiratorio2");
+        var campoFichaGestante = document.getElementById("campoFichaGestante");
+        var campoFichaFigadoRin = document.getElementById("campoFichaFigadoRin");
+        var campoFichaFigadoRin2 = document.getElementById("campoFichaFigadoRin2");
+        var campoFichaFuma = document.getElementById("campoFichaFuma");
+        var campoFichaHepatite = document.getElementById("campoFichaHepatite");
+        var campoFichaDiabetes = document.getElementById("campoFichaDiabetes");
+        var campoFichaCardiaco = document.getElementById("campoFichaCardiaco");
+        var campoFichaCardiaco2 = document.getElementById("campoFichaCardiaco2");
+        var campoFichaTipoSanguineo = document.getElementById("campoFichaTipoSanguineo");
+        var botaoUpsert = document.getElementById("botaoUpsert");
+
+        if(consultaFicha.length != 0){
+            campoFichaCirurgia.value = consultaFicha[0].fez_cirurgia
+            campoFichaCirurgia2.value = consultaFicha[0].cirurgia
+            campoFichaInternacao.value = consultaFicha[0].teve_internacao
+            campoFichaInternacao2.value = consultaFicha[0].internacao
+            campoFichaRemedio.value = consultaFicha[0].toma_remedio
+            campoFichaRemedio2.value = consultaFicha[0].remedio
+            campoFichaAlergia.value = consultaFicha[0].tem_alergia
+            campoFichaAlergia2.value = consultaFicha[0].alergia
+            campoFichaTratamento.value = consultaFicha[0].fez_tratamento
+            campoFichaTratamento2.value = consultaFicha[0].tratamento
+            campoFichaProblemaRespiratorio.value = consultaFicha[0].possui_problema_respiratorio
+            campoFichaProblemaRespiratorio2.value = consultaFicha[0].problema_respiratorio
+            campoFichaGestante.value = consultaFicha[0].gestante
+            campoFichaFigadoRin.value = consultaFicha[0].possui_problema_figado_rin
+            campoFichaFigadoRin2.value = consultaFicha[0].problema_figado_rin
+            campoFichaFuma.value = consultaFicha[0].fuma
+            campoFichaHepatite.value = consultaFicha[0].tem_hepatite
+            campoFichaDiabetes.value = consultaFicha[0].tem_diabetes
+            campoFichaCardiaco.value = consultaFicha[0].possui_problema_cardiaco
+            campoFichaCardiaco2.value = consultaFicha[0].problema_cardiaco
+            campoFichaTipoSanguineo.value = consultaFicha[0].tipo_sanguineo
         }
         else{
-            mensagem8.textContent = "Medicamento já cadastrado no sistema. Deseja edita-lo?"
-            var botaoEdit = document.createElement("button")
-            botaoEdit.setAttribute("type", "button")
-            botaoEdit.setAttribute("class", "btnEditMed")
-            botaoEdit.setAttribute("id", "nuPeguei")
-            botaoEdit.textContent = "Editar"
-            var botaoNao = document.createElement("button")
-            botaoNao.setAttribute("type","button")
-            botaoNao.setAttribute("class","btnNao")
-            botaoNao.textContent = "Não"
-            div.append(botaoEdit, botaoNao)
-            var idbtn = document.getElementById("nuPeguei")
-            idbtn.addEventListener("click", function(){
-                editaMedicamento(nomeMed.value, marcaMed.value, qntMed.value, doseMed.value)
-                nomeMed.value = ""
-                doseMed.value = ""
-                marcaMed.value = ""
-                qntMed.value = ""
-            })
         }
+
+        document.querySelectorAll("div.emvolta select").forEach((e) => {
+                try{
+                    const idInput = e.id;
+                    const valueInput = e.value;
+                    const campoEscondido = document.getElementById(idInput + "2");
+                    console.log(e.id);
         
-    })
-}
-catch (erro) {
-    console.log(erro);
-}
-
-try{
-    
-    dadosUsuario = JSON.parse(localStorage.getItem("dadosUsuario"));
-    var nomePerfilPaciente = document.getElementById("nomePerfilPaciente")
-    var cpfPerfilPaciente = document.getElementById("cpfPerfilPaciente")
-    var emailPerfilPaciente = document.getElementById("emailPerfilPaciente")
-    var telPerfilPaciente = document.getElementById("telPerfilPaciente")
-    var cartPerfilPaciente = document.getElementById("cartPerfilPaciente")
-    nomePerfilPaciente.textContent = dadosUsuario[0].nome
-    cpfPerfilPaciente.textContent = dadosUsuario[0].cpf
-    emailPerfilPaciente.textContent = dadosUsuario[0].email
-    telPerfilPaciente.textContent = dadosUsuario[0].telefone
-    cartPerfilPaciente.textContent = dadosUsuario[0].carteirinha_sus
-
-    var consultaFicha = preencheFicha(dadosUsuario[0].cpf)
-
-    
-
-    document.querySelector("div.emvolta").addEventListener("change", (e) => {
-        if (e.target.tagName == "SELECT") {
-            try{
-                const idInput = e.target.id;
-                const valueInput = e.target.value;
-                const campoEscondido = document.getElementById(idInput + "2");
-                console.log(e.target.id);
-    
-                if (valueInput == "S") {
-                    campoEscondido.style.display = "";
+                    if (valueInput == "S") {
+                        campoEscondido.style.display = "flex";
+                    }
+                    else {
+                        campoEscondido.style.display = "none";
+                    }
                 }
-                else {
-                    campoEscondido.style.display = "none";
+                catch(erro) {
+                    console.log(erro)
+                }
+            
+        });
+
+        document.querySelector("div.emvolta").addEventListener("change", (e) => {
+            if (e.target.tagName == "SELECT") {
+                try{
+                    const idInput = e.target.id;
+                    const valueInput = e.target.value;
+                    const campoEscondido = document.getElementById(idInput + "2");
+                    console.log(e.target.id);
+        
+                    if (valueInput == "S") {
+                        campoEscondido.style.display = "flex";
+                    }
+                    else {
+                        campoEscondido.style.display = "none";
+                    }
+                }
+                catch(erro) {
+                    console.log(erro)
                 }
             }
-            catch(erro) {
+        });
+    
+        botaoUpsert.addEventListener("click", function(){
+            const campos = document.querySelectorAll("input:not([style*='display: none']), select:not([style*='display: none'])");
+            let camposVazios = campos.length;
+
+            campos.forEach( (campo) => {
+                if (campo.value != "") {
+                    camposVazios--;
+                }
+            })
+
+            if (camposVazios > 0) {
+                alert("Favor preencher todos os campos!");
+            }
+            else {
+                cadastraAtualizaFicha(campoFichaCirurgia.value, 
+                    campoFichaCirurgia2.value, 
+                    campoFichaInternacao.value, 
+                    campoFichaInternacao2.value, 
+                    campoFichaRemedio.value, 
+                    campoFichaRemedio2.value, 
+                    campoFichaAlergia.value, 
+                    campoFichaAlergia2.value, 
+                    campoFichaTratamento.value, 
+                    campoFichaTratamento2.value, 
+                    campoFichaProblemaRespiratorio.value, 
+                    campoFichaProblemaRespiratorio2.value, 
+                    campoFichaGestante.value, 
+                    campoFichaFigadoRin.value, 
+                    campoFichaFigadoRin2.value, 
+                    campoFichaFuma.value, 
+                    campoFichaHepatite.value, 
+                    campoFichaDiabetes.value, 
+                    campoFichaCardiaco.value, 
+                    campoFichaCardiaco2.value,
+                    campoFichaTipoSanguineo.value,
+                    dadosUsuario[0].cpf)
+                    window.location.reload();
+            }
+        
+        })
+        
+    }
+    catch(erro){
+        console.log(erro)
+    }
+
+    try {
+        const botaoCadastraMed = document.getElementById("botaoCadastraMed")
+        
+        botaoCadastraMed.addEventListener("click", async () => {
+            var dadosAdm = localStorage.getItem("dadosAdm")
+            var nomeMed = document.getElementById("nomeMed")
+            var doseMed = document.getElementById("doseMed")
+            var marcaMed = document.getElementById("marcaMed")
+            var qntMed = document.getElementById("qntMed")
+            var div = document.getElementById("divBotoesMed")
+            var lista = await listaMedicamentos2(nomeMed.value, doseMed.value)
+            
+            if(lista.length == 0){
+                await cadastrarMedicamento(nomeMed.value, marcaMed.value, qntMed.value, dadosAdm, doseMed.value)
+                window.location.reload();
 
             }
+            else{
+                mensagem8.textContent = "Medicamento já cadastrado no sistema. Deseja edita-lo?"
+                var botaoEdit = document.createElement("button")
+                botaoEdit.setAttribute("type", "button")
+                botaoEdit.setAttribute("class", "btnEditMed")
+                botaoEdit.setAttribute("id", "nuPeguei")
+                botaoEdit.textContent = "Editar"
+                var botaoNao = document.createElement("button")
+                botaoNao.setAttribute("type","button")
+                botaoNao.setAttribute("class","btnNao")
+                botaoNao.textContent = "Não"
+                div.append(botaoEdit, botaoNao)
+                var idbtn = document.getElementById("nuPeguei")
+                idbtn.addEventListener("click", function(){
+                    editaMedicamento(nomeMed.value, marcaMed.value, qntMed.value, doseMed.value)
+                    window.location.reload();
+                })
+            }
+            
+        })
+    }
+    catch (erro) {
+        console.log(erro);
+    }
+
+    try {
+        document.getElementById("searchBarPacientes").addEventListener("keyup", function () {
+            const query = this.value.toLowerCase();
+            const rows = document.querySelectorAll("#tbodyListaPacientes tr");
+          
+            rows.forEach((row) => {
+              const cells = row.querySelectorAll("td");
+              const matches = Array.from(cells).some((cell) =>
+                cell.textContent.toLowerCase().includes(query)
+              );
+              row.style.display = matches ? "" : "none";
+            });
+          });
+
+        var tbodyListaPacientes = document.getElementById("tbodyListaPacientes")
+
+        var lista = await listaPacientes();
+        for (var i = 0; i < lista.length; i++) {
+            
+            tr = document.createElement("tr");
+            tdCpf = document.createElement("td");
+            tdCpf.setAttribute("class", "item");
+            tdNome = document.createElement("td");
+            tdNome.setAttribute("class", "item");
+            tdEmail = document.createElement("td");
+            tdEmail.setAttribute("class", "item");
+            tdCarteirinha = document.createElement("td");
+            tdCarteirinha.setAttribute("class", "item");
+            tdTelefone = document.createElement("td");
+            tdTelefone.setAttribute("class", "item");
+            tdOpc = document.createElement("td");
+            tdOpc.setAttribute("class", "item");
+            
+            btnRemoverPaciente = document.createElement("button");
+            btnRemoverPaciente.setAttribute("type", "button");
+            btnRemoverPaciente.setAttribute("id", lista[i].cpf_paciente);
+            btnRemoverPaciente.setAttribute("onclick", `removerPaciente("${lista[i].cpf_paciente}");window.location.reload();`);
+            
+            tdCpf.innerText = lista[i].cpf_paciente;
+            tdNome.innerText = lista[i].nome_paciente;
+            tdEmail.innerText = lista[i].email_paciente;
+            tdCarteirinha.innerText = lista[i].carteirinha_paciente;
+            tdTelefone.innerText = lista[i].telefone_paciente;
+            btnRemoverPaciente.textContent = "Excluir";
+    
+            tdOpc.append(btnRemoverPaciente)
+            tr.appendChild(tdCpf);
+            tr.appendChild(tdNome);
+            tr.appendChild(tdEmail);
+            tr.appendChild(tdCarteirinha);
+            tr.appendChild(tdTelefone);
+            tr.appendChild(tdOpc);
+            tbodyListaPacientes.appendChild(tr);
         }
-    });
+    }
+    catch(erro) {
+        console.log(erro);
+    }
 
-    var campoFichaCirurgia = document.getElementById("campoFichaCirurgia");
-    var campoFichaCirurgia2 = document.getElementById("campoFichaCirurgia2");
-    var campoFichaInternacao = document.getElementById("campoFichaInternacao");
-    var campoFichaInternacao2 = document.getElementById("campoFichaInternacao2");
-    var campoFichaRemedio = document.getElementById("campoFichaRemedio");
-    var campoFichaRemedio2 = document.getElementById("campoFichaRemedio2");
-    var campoFichaAlergia = document.getElementById("campoFichaAlergia");
-    var campoFichaAlergia2 = document.getElementById("campoFichaAlergia2");
-    var campoFichaTratamento = document.getElementById("campoFichaTratamento");
-    var campoFichaTratamento2 = document.getElementById("campoFichaTratamento2");
-    var campoFichaProblemaRespiratorio = document.getElementById("campoFichaProblemaRespiratorio");
-    var campoFichaProblemaRespiratorio2 = document.getElementById("campoFichaProblemaRespiratorio2");
-    var campoFichaGestante = document.getElementById("campoFichaGestante");
-    var campoFichaFigadoRin = document.getElementById("campoFichaFigadoRin");
-    var campoFichaFigadoRin2 = document.getElementById("campoFichaFigadoRin2");
-    var campoFichaFuma = document.getElementById("campoFichaFuma");
-    var campoFichaHepatite = document.getElementById("campoFichaHepatite");
-    var campoFichaDiabetes = document.getElementById("campoFichaDiabetes");
-    var campoFichaCardiaco = document.getElementById("campoFichaCardiaco");
-    var campoFichaCardiaco2 = document.getElementById("campoFichaCardiaco2");
-    var campoFichaTipoSanguineo = document.getElementById("campoFichaTipoSanguineo");
-    var botaoUpsert = document.getElementById("botaoUpsert")
-
-        campoFichaCirurgia.value = consultaFicha.fe
-        campoFichaCirurgia2.value =
-        campoFichaInternacao.value =
-        campoFichaInternacao2.value =
-        campoFichaRemedio.value = 
-        campoFichaRemedio2.value = 
-        campoFichaAlergia.value = 
-        campoFichaAlergia2.value = 
-        campoFichaTratamento.value = 
-        campoFichaTratamento2.value = 
-        campoFichaProblemaRespiratorio.value = 
-        campoFichaProblemaRespiratorio2.value = 
-        campoFichaGestante.value = 
-        campoFichaFigadoRin.value = 
-        campoFichaFigadoRin2.value = 
-        campoFichaFuma.value = 
-        campoFichaHepatite.value = 
-        campoFichaDiabetes.value = 
-        campoFichaCardiaco.value = 
-        campoFichaCardiaco2.value =
-        campoFichaTipoSanguineo.value = 
-
-    botaoUpsert.addEventListener("click", function(){
-        cadastraAtualizaFicha(campoFichaCirurgia.value, 
-        campoFichaCirurgia2.value, 
-        campoFichaInternacao.value, 
-        campoFichaInternacao2.value, 
-        campoFichaRemedio.value, 
-        campoFichaRemedio2.value, 
-        campoFichaAlergia.value, 
-        campoFichaAlergia2.value, 
-        campoFichaTratamento.value, 
-        campoFichaTratamento2.value, 
-        campoFichaProblemaRespiratorio.value, 
-        campoFichaProblemaRespiratorio2.value, 
-        campoFichaGestante.value, 
-        campoFichaFigadoRin.value, 
-        campoFichaFigadoRin2.value, 
-        campoFichaFuma.value, 
-        campoFichaHepatite.value, 
-        campoFichaDiabetes.value, 
-        campoFichaCardiaco.value, 
-        campoFichaCardiaco2.value,
-        campoFichaTipoSanguineo.value,
-        dadosUsuario[0].cpf)
+    try {
+        document.querySelector("#doseMed").addEventListener("input", () => {
+            const campoDosagem = document.querySelector("#doseMed");
+            campoDosagem.value = (campoDosagem.value).replace(/[^\d]/gi, "");
+        })
     
-    })
+        document.querySelector("#qntMed").addEventListener("input", () => {
+            const campoDosagem = document.querySelector("#qntMed");
+            campoDosagem.value = (campoDosagem.value).replace(/[^\d]/gi, "");
+        })
+    }
+    catch(erro) {
+        console.log(erro);
+    }
+
+    try {
+        if (localStorage.getItem("dadosAdm") != null && window.location.pathname == "/fila.html") {
+            const barraNav = document.querySelector("#navbarCollapse > div.navbar-nav.ms-auto.p-4.p-lg-0");
+            const opcoes = barraNav.querySelectorAll("a");
+
+            opcoes.forEach( (opcao) => {
+                if (opcao.innerText.toUpperCase() != "FILA DE ATENDIMENTO") {
+                    opcao.remove();
+                }
+            })
+            barraNav.innerHTML += `<a href="timelineADM.html" class="nav-item nav-link">Cadastro de Medicamentos</a>`
+            barraNav.innerHTML += `<a href="listaPacientes.html" class="nav-item nav-link">Lista de Pacientes</a>`
+            barraNav.innerHTML += `<a href="listaMedicos.html" class="nav-item nav-link">Lista de Médicos</a>`
+        }
+    }
+    catch(erro) {
+        console.log(erro);
+    }  
     
-}
-catch(erro){
-    console.log(erro)
-}
+    try {
+        var tbodyConsultasPaciente = document.getElementById("tbodyConsultasPaciente")
+
+        var consultasPaciente = await listaConsultasPaciente(dadosUsuario[0].cpf)
+
+        for (var i = 0; i < consultasPaciente.length; i++) {
+            tr = document.createElement("tr");
+            tr.setAttribute("class", "linhaTabelaConsultasPaciente")
+            tdSintomas = document.createElement("td")
+            tdSintomas.setAttribute("class", "item itemTabelaConsultasPaciente")
+            tdHorario = document.createElement("td")
+            tdHorario.setAttribute("class", "item itemTabelaConsultasPaciente")
+            tdData = document.createElement("td")
+            tdData.setAttribute("class", "item itemTabelaConsultasPaciente")
+            tdMedico = document.createElement("td" )
+            tdMedico.setAttribute("class", "item itemTabelaConsultasPaciente")
+            tdOpc = document.createElement("td")
+            tdOpc.setAttribute("class", "item itemTabelaConsultasPaciente")
+            btnRemover = document.createElement("button");
+            btnRemover.setAttribute("type", "button")
+            btnRemover.setAttribute("id", consultasPaciente[i].id_consulta)
+            btnRemover.setAttribute("onclick", `removerConsulta(${btnRemover.id}); window.location.reload();`);
+            tdSintomas.innerText = consultasPaciente[i].sintomas_consulta;
+            tdHorario.innerText = consultasPaciente[i].horario_consulta;
+            tdData.innerText = new Date(consultasPaciente[i].data_consulta).toLocaleDateString();
+            tdMedico.innerText = consultasPaciente[i].nome_medico;
+            btnRemover.textContent = "Excluir"
+
+            tdOpc.append(btnRemover)
+            tr.appendChild(tdSintomas);
+            tr.appendChild(tdHorario);
+            tr.appendChild(tdData);
+            tr.appendChild(tdMedico);
+            tr.appendChild(tdOpc);
+            tbodyConsultasPaciente.appendChild(tr);
+        }
+    }
+    catch(erro) {
+        console.log(erro);
+    }
+
+    try {
+        document.getElementById("searchBar").addEventListener("keyup", function () {
+            const query = this.value.toLowerCase();
+            const rows = document.querySelectorAll("#tbodyListaMedicos tr");
+          
+            rows.forEach((row) => {
+              const cells = row.querySelectorAll("td");
+              const matches = Array.from(cells).some((cell) =>
+                cell.textContent.toLowerCase().includes(query)
+              );
+              row.style.display = matches ? "" : "none";
+            });
+          });
+        
+        var tbodyListaMedicos = document.getElementById("tbodyListaMedicos")
+
+        var lista2 = await listaMedicos2();
+
+        for (var i = 0; i < lista2.length; i++) {
+            tr = document.createElement("tr");
+            tdCrm = document.createElement("td");
+            tdCrm.setAttribute("class", "item");
+            tdNome = document.createElement("td");
+            tdNome.setAttribute("class", "item");
+            tdEmail = document.createElement("td");
+            tdEmail.setAttribute("class", "item");
+            tdCpf = document.createElement("td");
+            tdCpf.setAttribute("class", "item");
+            tdTelefone = document.createElement("td");
+            tdTelefone.setAttribute("class", "item");
+            tdEsp = document.createElement("td");
+            tdEsp.setAttribute("class", "item");
+            tdOpc = document.createElement("td");
+            tdOpc.setAttribute("class", "item");
+            
+            btnRemoverMedico = document.createElement("button");
+            btnRemoverMedico.setAttribute("type", "button");
+            btnRemoverMedico.setAttribute("id", lista2[i].crm_medico);
+            btnRemoverMedico.setAttribute("onclick", `removerMedico('${lista2[i].crm_medico}');window.location.reload();`);
+            
+            tdCrm.innerText = lista2[i].crm_medico;
+            tdNome.innerText = lista2[i].nome_medico;
+            tdEmail.innerText = lista2[i].email_medico;
+            tdCpf.innerText = lista2[i].cpf_medico;
+            tdTelefone.innerText = lista2[i].telefone_medico;
+            tdEsp.innerText = lista2[i].especialidade_medico
+            btnRemoverMedico.textContent = "Excluir";
+    
+            tdOpc.append(btnRemoverMedico)
+            tr.appendChild(tdCrm);
+            tr.appendChild(tdNome);
+            tr.appendChild(tdEmail);
+            tr.appendChild(tdCpf);
+            tr.appendChild(tdTelefone);
+            tr.appendChild(tdEsp);
+            tr.appendChild(tdOpc);
+            tbodyListaMedicos.appendChild(tr);
+        }
+    }
+    catch(erro) {
+        console.log(erro);
+    }
+})
+
 
 
 /*foto*/

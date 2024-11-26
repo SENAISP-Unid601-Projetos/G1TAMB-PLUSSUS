@@ -12,6 +12,7 @@ const consultas = require("./model/consultas")
 const adm = require("./model/administradores");
 const medicamentos = require("./model/medicamentos");
 const fichaMedica = require("./model/fichaMedica");
+const email = require("./model/email");
 
 
 app.use(express.static(model));
@@ -73,6 +74,12 @@ app.get("/lista_consultas_med", async function(req, res){
     res.json(resposta);
 })
 
+app.get("/lista_consultas_paciente", async function(req, res){
+    const dados = req.query;
+    const resposta = await consultas.getConsultasPaciente(dados);
+    res.json(resposta);
+})
+
 app.get("/pega_medico", async function(req, res){
     const parametros = req.query;
     const listaMedicos = medicos.getMedico(parametros);
@@ -92,10 +99,11 @@ app.get("/pega_adm", async function(req, res){
 
 //POST
 
-app.post("/cadastra_paciente", function(req, res){
+app.post("/cadastra_paciente", async function(req, res){
     const dados = req.body;
-    const resposta = pacientes.cadastraPaciente(dados);
-    res.json({mensagem: resposta})
+    const resposta = await pacientes.cadastraPaciente(dados);
+    const status = resposta.sucesso === true ? 201:500;
+    res.status(status).json(resposta);
 })
 
 app.post("/upsert_ficha", function(req, res){
@@ -104,23 +112,44 @@ app.post("/upsert_ficha", function(req, res){
     res.json({mensagem: resposta})
 })
 
-app.post("/cadastra_medico", function(req, res){
+app.post("/cadastra_medico", async function(req, res){
     const dados = req.body;
-    const resposta = medicos.cadastraMedico(dados);
-    res.json({mensagem: resposta})
+    const resposta = await medicos.cadastraMedico(dados);
+    const status = resposta.sucesso === true ? 201:500;
+    res.status(status).json(resposta);
 })
 
-app.post("/cadastra_medicamento", function(req, res){
+app.post("/cadastra_medicamento", async function(req, res){
     const dados = req.body;
     const resposta = medicamentos.cadastraMedicamento(dados);
     res.json({mensagem: resposta})
 })
 
-app.post("/edita_medicamento", function(req, res){
+app.post("/edita_medicamento", async function(req, res){
     const dados = req.body;
-    const resposta = medicamentos.editarMedicamento(dados);
+    const resposta = await medicamentos.editarMedicamento(dados);
+    res.json(resposta)
+})
+
+app.post("/remove_consultas", function(req, res){
+    const dados = req.body;
+    const resposta = consultas.removeConsultas(dados);
     res.json({mensagem: resposta})
 })
+
+app.post("/remove_paciente", async function(req, res){
+    const dados = req.body;
+    console.log(dados);
+    const resposta = await pacientes.removePaciente(dados);
+    res.json({mensagem: resposta})
+})
+
+app.post("/remove_medico", function(req, res){
+    const dados = req.body;
+    const resposta = medicos.removeMedico(dados);
+    res.json({mensagem: resposta})
+})
+
 
 app.post("/cadastra_adm", function(req, res){
     const dados = req.body;
@@ -150,6 +179,18 @@ app.post("/agenda", function(req, res){
     const dados = req.body;
     const resposta = consultas.cadastraConsulta(dados);
     res.json({mensagem: resposta})
+})
+
+app.post("/resetSenha", async (req, res) => {
+    const dados = req.body;
+    const enviaEmail = await email.enviaResetSenha(dados);
+    res.json(enviaEmail);
+})
+
+app.post("/atualizaSenha", async (req, res) => {
+    const dados = req.body;
+    const enviaEmail = await email.atualizaSenha(dados);
+    res.json(enviaEmail);
 })
 
 

@@ -9,7 +9,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="img/logo2.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,6 +135,24 @@
         </div>
       </div>
     </div>
+
+    <div class="table-wrapper">
+      <table class="fl-table">
+        <div class="filal" style="background-color: #13570e; box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset; border-top-left-radius: 25px; border-top-right-radius: 25px;"> <i class="fa fa-stethoscope" style="margin-right: 10px;"></i>Consultas</div>
+          <thead>
+            <tr>
+              <th>Sintomas</th>
+              <th>Horário</th>
+              <th>Data</th>
+              <th>Médico</th>
+              <th>Opções</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyConsultasPaciente">
+          </tbody>
+        </div>
+      </table>
+    </div>  
     
 
     <div class="one">
@@ -147,67 +165,73 @@
     <div class="ficha">
       <h5 style="color: black">Já fez alguma cirurgia?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time"  data-target-input="nearest">
+        <div class="divFicha"  data-target-input="nearest">
             <select id="campoFichaCirurgia" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+                <option value="" selected="selected">-- Selecione --</option>
+                <option value="S">Sim</option>
+                <option value="N">Não</option>
             </select>
-            <input type="text" placeholder="Qual?" id="campoFichaCirurgia2" style="display: none;">
+            <input class="textoficha" type="text" placeholder="Qual?" id="campoFichaCirurgia2" style="display: none;">
         </div>
     </div>
     </select>
   
       <h5 style="margin-top: 2%; color: black">Teve alguma internação hospitalar?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time"  data-target-input="nearest">
+        <div class="divFicha"  data-target-input="nearest">
             <select id="campoFichaInternacao" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+                <option value="" selected="selected">-- Selecione --</option>
+                <option value="S">Sim</option>
+                <option value="N">Não</option>
             </select>
-            <input type="text" placeholder="Qual?" id="campoFichaInternacao2" style="display: none;">
+            <input class="textoficha" type="text" placeholder="Qual?" id="campoFichaInternacao2" style="display: none;">
         </div>
     </div>
 
       <h5 style="margin-top: 2%; color: black">Utiliza de algum remédio contínuo?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time"  data-target-input="nearest">
+        <div class="divFicha"  data-target-input="nearest">
             <select id="campoFichaRemedio" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+              <option value="" selected="selected">-- Selecione --</option>
+                <option value="S">Sim</option>
+                <option value="N">Não</option>
             </select>
-            <input type="text" placeholder="Qual?" id="campoFichaRemedio2" style="display: none;">
+            <input class="textoficha" type="text" placeholder="Qual?" id="campoFichaRemedio2" style="display: none;">
         </div>
     </div>
       <h5 style="margin-top: 2%; color: black">Tem alergia a algum tipo de medicamento?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time" data-target-input="nearest">
+        <div class="divFicha" data-target-input="nearest">
             <select id="campoFichaAlergia" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+              <option value="" selected="selected">-- Selecione --</option>
+              <option value="S">Sim</option>
+                <option value="N">Não</option>
             </select>
-            <input type="text" placeholder="Qual?" id="campoFichaAlergia2" style="display: none;">
+            <input class="textoficha" type="text" placeholder="Qual?" id="campoFichaAlergia2" style="display: none;">
         </div>
     </div>
 
       <h5 style="margin-top: 2%; color: black">Faz tratamento médico?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time"  data-target-input="nearest">
+        <div class="divFicha"  data-target-input="nearest">
             <select id="campoFichaTratamento" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+              <option value="" selected="selected">-- Selecione --</option>
+              <option value="S">Sim</option>
+                <option value="N">Não</option>
             </select>
-            <input type="text" placeholder="Qual?" id="campoFichaTratamento2" style="display: none;">
+            <input class="textoficha" type="text" placeholder="Qual?" id="campoFichaTratamento2" style="display: none;">
         </div>
     </div>
 
       <h5 style="margin-top: 2%; color: black">Possui problemas respiratórios?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time"  data-target-input="nearest">
+        <div class="divFicha"  data-target-input="nearest">
             <select id="campoFichaProblemaRespiratorio" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+              <option value="" selected="selected">-- Selecione --</option>
+              <option value="S">Sim</option>
+                <option value="N">Não</option>
             </select>
-            <input type="text" placeholder="Qual?" id="campoFichaProblemaRespiratorio2" style="display: none;">
+            <input class="textoficha" type="text" placeholder="Qual?" id="campoFichaProblemaRespiratorio2" style="display: none;">
         </div>
     </div>
     </div>
@@ -216,69 +240,79 @@
 
       <h5 style="margin-top: 2%; color: black">É gestante?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time"  data-target-input="nearest">
+        <div class="divFicha"  data-target-input="nearest">
             <select id="campoFichaGestante" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+              <option value="" selected="selected">-- Selecione --</option>
+              <option value="S">Sim</option>
+                <option value="N">Não</option>
             </select>
         </div>
     </div>
 
       <h5 style="margin-top: 2%; color: black">Possui problemas no fígado ou rins?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time"  data-target-input="nearest">
+        <div class="divFicha"  data-target-input="nearest">
             <select id="campoFichaFigadoRin" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+              <option value="" selected="selected">-- Selecione --</option>
+              <option value="S">Sim</option>
+                <option value="N">Não</option>
             </select>
-            <input type="text" placeholder="Qual?" id="campoFichaFigadoRin2" style="display: none;">
+            <input class="textoficha" type="text" placeholder="Qual?" id="campoFichaFigadoRin2" style="display: none;">
         </div>
     </div>
 
       <h5 style="margin-top: 2%; color: black">É fumante?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time"  data-target-input="nearest">
+        <div class="divFicha"  data-target-input="nearest">
             <select id="campoFichaFuma" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+              <option value="" selected="selected">-- Selecione --</option>  
+              <option value="S">Sim</option>
+                <option value="N">Não</option>
             </select>
         </div>
     </div>
 
       <h5 style="margin-top: 2%; color: black">Já teve hepatite?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time"  data-target-input="nearest">
+        <div class="divFicha"  data-target-input="nearest">
             <select id="campoFichaHepatite" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+              <option value="" selected="selected">-- Selecione --</option>  
+              <option value="S">Sim</option>
+                <option value="N">Não</option>
             </select>
         </div>
     </div>
 
       <h5 style="margin-top: 2%; color: black">Possui diabetes?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time"  data-target-input="nearest">
+        <div class="divFicha"  data-target-input="nearest">
             <select id="campoFichaDiabetes" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+              <option value="" selected="selected">-- Selecione --</option>  
+              <option value="S">Sim</option>
+                <option value="N">Não</option>
             </select>
         </div>
     </div>
 
       <h5 style="margin-top: 2%; color: black">Possui problemas cardíacos?</h5>
       <div class="col-12 col-sm-6">
-        <div class="time"  data-target-input="nearest">
+        <div class="divFicha"  data-target-input="nearest">
             <select id="campoFichaCardiaco" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
-                <option value="S" selected="selected">Sim</option>
-                <option value="N" selected="selected">Não</option>
+              <option value="">Selecione</option>  
+              <option value="S" >Sim</option>
+                <option value="N" >Não</option>
             </select>
-            <input type="text" placeholder="Qual?" id="campoFichaCardiaco2" style="display: none;">
+            <input class="textoficha" type="text" placeholder="Qual?" id="campoFichaCardiaco2" style="display: none;">
         </div>
     </div>
-    <h5 style="margin-top: 2%; color: black">Tipo sanguíneo</h5>
+
+    </div>   
+  </div>
+  <div class="baixoficha" style="text-align: center;">
+  <h5 style="margin-top: 2%; color: black">Tipo sanguíneo</h5>
       <div class="col-12 col-sm-6">
-        <div class="time" data-target-input="nearest">
-            <select id="campoFichaTipoSanguineo" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
+        <div class="divFicha" data-target-input="nearest">
+            <select id="campoFichaTipoSanguineo" class="form-select border-0" style="height: 45px; width: 340px;box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px; margin-left: 75%;">
                 <option value="A+" >A+</option>
                 <option value="A-" >A-</option>
                 <option value="B+" >B+</option>
@@ -288,14 +322,11 @@
                 <option value="O+" >O+</option>
                 <option value="O-" selected="selected">O-</option>
             </select>
-            <input type="text" id="campoFichaCirurgia2" style="display: none;">
+            <input class="textoficha" type="text" id="campoFichaCirurgia2" style="display: none;">
         </div>
       </div>
-      <button type="button" id="botaoUpsert">Atualizar ficha</button>
-    </div>
-
-    
-  </div>
+  <button class="botaoatualizar" type="button" id="botaoUpsert">Atualizar Ficha</button>
+</div>
 </div>
 
    <!--Perfil Paciente End-->

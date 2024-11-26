@@ -9,7 +9,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="img/logo2.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -109,7 +109,7 @@
                     </div>
                     <div class="rounded d-flex align-items-center p-5" style="background-color: #13570eab; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
                         <div class="d-flex flex-shrink-0 align-items-center justify-content-center rounded-circle bg-white" style="width: 55px; height: 55px;">
-                            <i class="fa fa-envelope-open"></i>
+                            <i class="fa fa-envelope-open text-white"></i>
                         </div>
                         <div class="ms-4">
                             <p class="mb-2" style="color: white;">Nos mande um Email</p>
@@ -128,7 +128,7 @@
                                 </div>
                                 <div class="col-12 col-sm-6">
                                     <div class="date" id="date" data-target-input="nearest" onchange="listaHorarios(document.getElementById('especialidade').value,document.getElementById('dataAtendimento').value)">
-                                        <input id="dataAtendimento" type="date" class="form-control border-0" placeholder="Escolha uma data" style="height: 55px;">
+                                        <input id="dataAtendimento" type="date" class="form-control border-0" placeholder="Escolha uma data" style="height: 55px;" onkeydown="event.preventDefault()">
                                     </div>
                                 </div>
                                 <div class="col-12 col-sm-6">

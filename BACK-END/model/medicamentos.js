@@ -9,7 +9,7 @@ async function cadastraMedicamento(dados){
 
 async function editarMedicamento(dados){
     const conexao = psql.conectaBanco();
-    const resultado = await conexao.query(`update medicamentos set marca = '${dados.marca}', quantidade = ${dados.quantidade}, dosagem = '${dados.dosagem}' where nome = '${dados.nome} '`);
+    const resultado = await conexao.query(`update medicamentos set marca = '${dados.marca}', quantidade = ${dados.quantidade} where nome = '${dados.nome}' and dosagem = '${dados.dosagem}'`);
     conexao.end();
     return resultado;
 }
